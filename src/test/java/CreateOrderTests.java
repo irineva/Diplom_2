@@ -1,19 +1,21 @@
 import io.qameta.allure.junit4.DisplayName;
 import io.restassured.response.Response;
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import requests.testsData.Ingredients;
 import requests.testsData.UserCredsData;
 import steps.TestSteps;
 
 public class CreateOrderTests {
-
-    static String email = "yeva@ya.ru";
-    static String password = "1234";
-    static String name = "kate";
-
     TestSteps testSteps = new TestSteps();
     Ingredients ingredients = new Ingredients();
+    UserCredsData user;
+
+    @Before
+    public void setUser() {
+        user = testSteps.setUserDataStep();
+    }
 
     @After
     public void deleteTestData() {
@@ -26,7 +28,7 @@ public class CreateOrderTests {
     public void createOrderWithIngredientsTest() {
         ingredients.setIngredients(testSteps.getIngredientStep());
 
-        testSteps.createUserStep(new UserCredsData(email, password, name));
+        testSteps.createUserStep(user);
         Response response = testSteps.createOrderStep(ingredients, true);
         testSteps.checkAnswerForCreateSuccessOrderStep(response);
     }
@@ -34,7 +36,7 @@ public class CreateOrderTests {
     @Test
     @DisplayName("Создание заказа без ингредиентами")
     public void createOrderWithoutIngredientsTest() {
-        testSteps.createUserStep(new UserCredsData(email, password, name));
+        testSteps.createUserStep(user);
         Response response = testSteps.createOrderStep(ingredients, true);
         testSteps.checkAnswerForCreateOrderWithoutIngredientsStep(response);
     }
@@ -43,7 +45,7 @@ public class CreateOrderTests {
     @DisplayName("Создание заказа без ингредиентами")
     public void createOrderWithInvalidIngredientsTest() {
         ingredients.setIngredients(null);
-        testSteps.createUserStep(new UserCredsData(email, password, name));
+        testSteps.createUserStep(user);
         Response response = testSteps.createOrderStep(ingredients, true);
         testSteps.checkAnswerForCreateOrderInvalidIngredientsStep(response);
     }
@@ -59,7 +61,7 @@ public class CreateOrderTests {
     @Test
     @DisplayName("Получение заказа с авторизацией")
     public void getOrderWithAuthTest() {
-        testSteps.createUserStep(new UserCredsData(email, password, name));
+        testSteps.createUserStep(user);
         ingredients.setIngredients(testSteps.getIngredientStep());
         testSteps.createOrderStep(ingredients, true);
         Response response = testSteps.getOrderStep(true);

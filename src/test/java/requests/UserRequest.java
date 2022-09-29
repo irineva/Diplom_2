@@ -10,7 +10,9 @@ import static io.restassured.RestAssured.given;
 
 public class UserRequest extends BaseRequest {
     private static String accessToken = null;
-    private final static String USER_PATH = "/api/auth/";
+    private final static String USER_PATH = "/api/auth/user";
+    private final static String REGISTER_PATH = "/api/auth/register";
+    private final static String LOGIN_PATH = "/api/auth/login";
 
     public Response createUser(UserCredsData user) {
         Response response =
@@ -19,7 +21,7 @@ public class UserRequest extends BaseRequest {
                         .and()
                         .body(user)
                         .when()
-                        .post(USER_PATH + "register");
+                        .post(REGISTER_PATH);
         if (accessToken == null) {
             saveAccessToken(response);
         }
@@ -32,7 +34,7 @@ public class UserRequest extends BaseRequest {
                     .spec(requestSpecification)
                     .header("Authorization", accessToken)
                     .when()
-                    .delete(USER_PATH + "user");
+                    .delete(USER_PATH);
         }
     }
 
@@ -43,13 +45,12 @@ public class UserRequest extends BaseRequest {
                         .and()
                         .body(user)
                         .when()
-                        .post(USER_PATH + "login");
+                        .post(LOGIN_PATH);
         return response;
     }
 
     public Response updateUser(UserCredsData user, boolean authorised) {
         Map<String, String> headers = new HashMap<>();
-        headers.put("Content-type", "application/json");
         if (authorised) {
             headers.put("Authorization", accessToken);
         }
@@ -60,7 +61,7 @@ public class UserRequest extends BaseRequest {
                         .and()
                         .body(user)
                         .when()
-                        .patch(USER_PATH + "user");
+                        .patch(USER_PATH);
         return response;
     }
 

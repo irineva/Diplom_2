@@ -1,18 +1,22 @@
 import io.qameta.allure.junit4.DisplayName;
 import io.restassured.response.Response;
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import requests.testsData.UserCredsData;
 import steps.TestSteps;
 
+
 public class CreateUserTests {
-    static String email = "eva@ya.ru";
     static String password = "1234";
     static String name = "kate";
-    static String dublicateEmail = "kates@ya.ru";
-
     TestSteps testSteps = new TestSteps();
+    UserCredsData user;
 
+    @Before
+    public void setUser() {
+        user = testSteps.setUserDataStep();
+    }
 
     @After
     public void deleteTestData() {
@@ -23,15 +27,15 @@ public class CreateUserTests {
     @Test
     @DisplayName("Создание пользователя")
     public void createUserTest() {
-        Response response = testSteps.createUserStep(new UserCredsData(email, password, name));
+        Response response = testSteps.createUserStep(user);
         testSteps.checkAnswerForSuccsessStep(response);
     }
 
     @Test
     @DisplayName("Попытка создания уже существующего пользователя")
     public void createDublicateUserTest() {
-        testSteps.createUserStep(new UserCredsData(dublicateEmail, password, name));
-        Response response = testSteps.createUserStep(new UserCredsData(dublicateEmail, password, name));
+        testSteps.createUserStep(user);
+        Response response = testSteps.createUserStep(user);
         testSteps.checkAnswerForExistingUserCreateStep(response);
     }
 

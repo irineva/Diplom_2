@@ -7,14 +7,25 @@ import requests.UserRequest;
 import requests.testsData.Ingredients;
 import requests.testsData.UserCredsData;
 
+import java.util.Random;
+
 import static org.apache.http.HttpStatus.*;
 import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.notNullValue;
 
 public class TestSteps {
 
     UserRequest userRequest = new UserRequest();
     OrderRequest orderRequest = new OrderRequest();
+
+    @Step("Задаем уникальные данные нового пользователя")
+    public UserCredsData setUserDataStep() {
+        int random = new Random().nextInt(10);
+        UserCredsData user;
+        user = new UserCredsData("test_email_" + random + "@ya.ru",
+                "test_pass",
+                "test_name_" + random);
+        return user;
+    }
 
     @Step("Создаем нового пользователя")
     public Response createUserStep(UserCredsData user) {

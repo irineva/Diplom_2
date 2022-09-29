@@ -11,11 +11,11 @@ import static io.restassured.RestAssured.given;
 public class OrderRequest extends BaseRequest {
 
     private final static String ORDER_PATH = "/api/orders";
+    private final static String INGREDIENTS_PATH ="/api/ingredients";
     UserRequest userRequest = new UserRequest();
 
     public Response createOrder(Ingredients ingredients, boolean withAuth) {
         Map<String, String> headers = new HashMap<>();
-        headers.put("Content-type", "application/json");
         if (withAuth) {
             headers.put("Authorization", userRequest.getToken());
         }
@@ -49,7 +49,7 @@ public class OrderRequest extends BaseRequest {
                 given()
                         .spec(requestSpecification)
                         .when()
-                        .get("/api/ingredients")
+                        .get(INGREDIENTS_PATH)
                         .then()
                         .extract()
                         .body()
